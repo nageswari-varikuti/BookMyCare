@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BookMyCare
 
 BookMyCare is a healthcare web application that helps users book doctor appointments, order medicines, register as blood donors, and request blood when needed.
@@ -47,4 +48,6 @@ Nageswari
 
 GitHub:
 https://github.com/nageswari-varikuti
+=======
+>>>>>>> 409b825784937d2de3f488a780113efefd807256
 
