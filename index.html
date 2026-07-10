@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyCare - Medical Management Platform</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Auth Modal -->
+<div id="authModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+        <h2 style="text-align: center; margin-bottom: 20px;">BookMyCare</h2>
+        
+        <div class="form-tabs">
+            <button class="form-tab active" onclick="switchAuthTab('login')">Login</button>
+            <button class="form-tab" onclick="switchAuthTab('signup')">Sign Up</button>
+        </div>
+
+        <div id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <div class="form-group">
+                <label>Login As</label>
+                <select id="loginRole">
+                    <option value="Patient">Patient</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Donor">Blood Donor</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="handleLogin()">Login</button>
+        </div>
+
+        <div id="signupForm" class="auth-form">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signupName" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password">
+            </div>
+            <div class="form-group">
+                <label>Register As</label>
+                <select id="signupRole">
+                    <option value="Patient">Patient</option>
+                    <option value="Doctor">Doctor</option>
+                    <option value="Donor">Blood Donor</option>
+                </select>
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="handleSignup()">Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- Main App -->
+<div id="mainApp">
+    <header>
+        <div class="header-title">💊 BookMyCare</div>
+        <div class="header-auth">
+            <div id="guestActions">
+                <button class="btn-auth" onclick="openAuthModal('login')">Login</button>
+                <button class="btn-auth" onclick="openAuthModal('signup')">Sign Up</button>
+            </div>
+            <div id="userActions" style="display: none;">
+                <div class="user-info"><span id="userName"></span></div>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchTab('home')">🏠 Home</button>
+        <button class="nav-tab" onclick="switchTab('appointments')">📅 Appointments</button>
+        <button class="nav-tab" onclick="switchTab('blood')">🩸 Blood Donation</button>
+        <button class="nav-tab" onclick="switchTab('medicine')">💊 Medicine</button>
+        <button class="nav-tab" onclick="switchTab('alerts')">🔔 Alerts</button>
+    </div>
+
+    <div class="container">
+        <!-- Home Tab -->
+        <div id="homeTab" class="tab-content active">
+            <div class="hero-banner">
+                <h2>Welcome to BookMyCare!</h2>
+                <p>Your Complete Healthcare Management Platform</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div>📅 Appointments</div>
+                    <div class="stat-number" id="appointmentCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>🩸 Blood Donors</div>
+                    <div class="stat-number" id="donorCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>💊 Medicine Orders</div>
+                    <div class="stat-number" id="medicineCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>🔔 Alerts</div>
+                    <div class="stat-number" id="alertCount">0</div>
+                </div>
+            </div>
+
+            <h2 style="text-align: center; margin: 40px 0 20px; color: #667eea;">Our Medical Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">📅</div>
+                    <h3>Doctor Appointments</h3>
+                    <p>Book appointments with specialists instantly. Choose from various departments and time slots.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🩸</div>
+                    <h3>Blood Donation</h3>
+                    <p>Register as a donor or request blood in emergencies. Connect with nearby donors quickly.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💊</div>
+                    <h3>Medicine Delivery</h3>
+                    <p>Upload prescriptions and get medicines delivered to your doorstep the same day.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔔</div>
+                    <h3>Smart Alerts</h3>
+                    <p>Get timely reminders for appointments, blood donation requests, and order updates.</p>
+                </div>
+            </div>
+
+            <!-- Featured Doctors Section -->
+            <div class="featured-section">
+                <h2>Meet Our Expert Doctors</h2>
+                <div class="doctors-grid">
+                    <div class="doctor-card">
+                        <div class="doctor-info">
+                            <h4>Dr. Sarah Anderson</h4>
+                            <div class="specialty">Cardiologist</div>
+                            <div class="rating">⭐⭐⭐⭐⭐ 4.9/5</div>
+                            <div class="details">15+ years experience | MBBS, MD Cardiology | Available Mon-Fri</div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-info">
+                            <h4>Dr. Michael Chen</h4>
+                            <div class="specialty">Dentist</div>
+                            <div class="rating">⭐⭐⭐⭐⭐ 4.8/5</div>
+                            <div class="details">12+ years experience | BDS, MDS | Available All Days</div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-info">
+                            <h4>Dr. Emily Roberts</h4>
+                            <div class="specialty">Dermatologist</div>
+                            <div class="rating">⭐⭐⭐⭐⭐ 4.9/5</div>
+                            <div class="details">10+ years experience | MBBS, MD Dermatology | Available Tue-Sat</div>
+                        </div>
+                    </div>
+                    <div class="doctor-card">
+                        <div class="doctor-info">
+                            <h4>Dr. James Wilson</h4>
+                            <div class="specialty">Neurologist</div>
+                            <div class="rating">⭐⭐⭐⭐⭐ 4.7/5</div>
+                            <div class="details">18+ years experience | MBBS, DM Neurology | Available Mon-Sat</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Medical Facilities -->
+            <div class="featured-section">
+                <h2>Our Medical Facilities</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🏥</div>
+                        <h3>Intensive Care Unit</h3>
+                        <p>Advanced ICU with 24/7 monitoring and life support systems for critical patients</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">⚕️</div>
+                        <h3>Operation Theatres</h3>
+                        <p>Fully equipped surgical suites with advanced technology and sterile environment</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🔬</div>
+                        <h3>Diagnostic Laboratory</h3>
+                        <p>State-of-the-art lab with accurate and quick test results for all diagnostics</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">💊</div>
+                        <h3>24/7 Pharmacy</h3>
+                        <p>Well-stocked pharmacy with all essential medications available round the clock</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Testimonials -->
+            <div class="testimonial-section">
+                <h2>What Our Patients Say</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="rating">⭐⭐⭐⭐⭐</div>
+                        <div class="quote">"Excellent service! The appointment booking was seamless and the doctors were very professional. Highly recommended!"</div>
+                        <div class="author">- Rajesh Kumar, Hyderabad</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="rating">⭐⭐⭐⭐⭐</div>
+                        <div class="quote">"The blood donation feature is amazing. I was able to find a donor within minutes during an emergency. Thank you BookMyCare!"</div>
+                        <div class="author">- Priya Sharma, Chennai</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="rating">⭐⭐⭐⭐⭐</div>
+                        <div class="quote">"Medicine delivery service is super convenient. Got my prescription medicines delivered the same day. Great platform!"</div>
+                        <div class="author">- Amit Patel, Mumbai</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Tab -->
+        <div id="appointmentsTab" class="tab-content">
+            <div class="card">
+                <h3>📅 Book Appointment</h3>
+                <div class="form-group">
+                    <label>Patient Name</label>
+                    <input type="text" id="patientName">
+                </div>
+                <div class="form-group">
+                    <label>Select Hospital</label>
+                    <select id="hospitalName" onchange="updateDoctorsByHospital()">
+                        <option value="">Select Hospital</option>
+                        <option value="Apollo Hospitals">Apollo Hospitals</option>
+                        <option value="Fortis Healthcare">Fortis Healthcare</option>
+                        <option value="Max Healthcare">Max Healthcare</option>
+                        <option value="Manipal Hospitals">Manipal Hospitals</option>
+                        <option value="CARE Hospitals">CARE Hospitals</option>
+                        <option value="Medanta - The Medicity">Medanta - The Medicity</option>
+                        <option value="KIMS Hospitals">KIMS Hospitals</option>
+                        <option value="Yashoda Hospitals">Yashoda Hospitals</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Specialization</label>
+                    <select id="doctorSpecialty" onchange="checkAppointmentAvailability()">
+                        <option value="">Select</option>
+                        <option value="Cardiologist">Cardiologist</option>
+                        <option value="Dentist">Dentist</option>
+                        <option value="Dermatologist">Dermatologist</option>
+                        <option value="Neurologist">Neurologist</option>
+                        <option value="Orthopedic">Orthopedic</option>
+                        <option value="Pediatrician">Pediatrician</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="appointmentDate" onchange="checkAppointmentAvailability()">
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="tel" id="appointmentContact">
+                </div>
+                
+                <div id="appointmentQueue" style="display: none; background: #f0f4ff; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4 style="color: #667eea; margin-bottom: 10px;">📋 Current Queue Status</h4>
+                    <p id="queueInfo"></p>
+                    <div style="margin-top: 10px; padding: 10px; background: white; border-radius: 5px;">
+                        <strong>Your Appointment Number will be: <span id="nextAppointmentNumber" style="color: #667eea; font-size: 20px;"></span></strong>
+                    </div>
+                </div>
+                
+                <button class="btn-success" onclick="bookAppointment()">Book Appointment</button>
+            </div>
+            <div class="card">
+                <h3>Your Appointments</h3>
+                <div id="appointmentsList" class="item-list">
+                    <p style="color: #999;">No appointments yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Donation Tab -->
+        <div id="bloodTab" class="tab-content">
+            <div class="card">
+                <h3>🩸 Register as Donor</h3>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="donorName">
+                </div>
+                <div class="form-group">
+                    <label>Blood Group</label>
+                    <select id="donorBloodType">
+                        <option value="">Select</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" id="donorAge" min="18" max="65">
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="tel" id="donorContact">
+                </div>
+                <div class="form-group">
+                    <label>Area</label>
+                    <input type="text" id="donorArea">
+                </div>
+                <button class="btn-danger" onclick="registerDonor()">Register as Donor</button>
+            </div>
+
+            <div class="card">
+                <h3>🆘 Request Blood</h3>
+                <div class="form-group">
+                    <label>Patient Name</label>
+                    <input type="text" id="requestPatientName">
+                </div>
+                <div class="form-group">
+                    <label>Blood Group Needed</label>
+                    <select id="requestBloodType">
+                        <option value="">Select</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hospital</label>
+                    <input type="text" id="requestHospital">
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="requestLocation">
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="tel" id="requestContact">
+                </div>
+                <button class="btn-danger" onclick="requestBlood()">Request Blood</button>
+            </div>
+
+            <div class="card">
+                <h3>Registered Donors</h3>
+                <div id="donorsList" class="item-list">
+                    <p style="color: #999;">No donors yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medicine Tab -->
+        <div id="medicineTab" class="tab-content">
+            <div class="card">
+                <h3>💊 Order Medicine</h3>
+                <div class="form-group">
+                    <label>Patient Name</label>
+                    <input type="text" id="medicineName">
+                </div>
+                <div class="form-group">
+                    <label>Prescription</label>
+                    <input type="file" id="prescriptionFile" accept="image/*,.pdf">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Address</label>
+                    <textarea id="deliveryAddress" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Contact</label>
+                    <input type="tel" id="medicineContact">
+                </div>
+                <div class="form-group">
+                    <label>Delivery Time</label>
+                    <select id="deliveryTime">
+                        <option>Morning (9 AM - 12 PM)</option>
+                        <option>Afternoon (12 PM - 3 PM)</option>
+                        <option>Evening (3 PM - 6 PM)</option>
+                        <option>Anytime</option>
+                    </select>
+                </div>
+                <button class="btn-success" onclick="uploadPrescription()">Place Order</button>
+            </div>
+
+            <div class="card">
+                <h3>Your Orders</h3>
+                <div id="medicineList" class="item-list">
+                    <p style="color: #999;">No orders yet</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerts Tab -->
+        <div id="alertsTab" class="tab-content">
+            <div class="card">
+                <h3>🔔 All Notifications & Alerts</h3>
+                <div id="allAlerts" class="item-list">
+                    <p style="color: #999;">No alerts yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About BookMyCare</h3>
+                <p>Your trusted healthcare management platform. We provide seamless appointment booking, blood donation services, and medicine delivery.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="#" onclick="switchTab('appointments')">Book Appointment</a>
+                <a href="#" onclick="switchTab('blood')">Blood Donation</a>
+                <a href="#" onclick="switchTab('medicine')">Order Medicine</a>
+                <a href="#" onclick="switchTab('alerts')">View Alerts</a>
+            </div>
+            <div class="footer-section">
+                <h3>Services</h3>
+                <p>✓ 24/7 Emergency Support</p>
+                <p>✓ Expert Consultations</p>
+                <p>✓ Same-day Medicine Delivery</p>
+                <p>✓ Blood Donor Network</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact & Helpline</h3>
+                <p>📞 Emergency: 108</p>
+                <p>📞 Helpline: 1800-123-4567</p>
+                <p>📧 Email: support@bookmycare.com</p>
+                <p>⏰ Available: 24/7</p>
+                <p>📍 Address: Hyderabad, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 BookMyCare. All rights reserved. | Your Health, Our Priority</p>
+        </div>
+    </footer>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+                
